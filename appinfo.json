@@ -1,0 +1,14 @@
+{
+  "id": "sv.edu.catolica.rex",
+  "version": "1.0.0",
+  "vendor": "UCA",
+  "type": "web",
+  "main": "index.html",
+  "title": "REX",
+  "icon": "assets/icon.png",
+  "largeIcon": "assets/icon_large.png",
+
+
+  "handlesRelaunch": false,
+  "disableBackHistoryAPI": false
+}

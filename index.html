@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, initial-scale=1.0" />
+  <title>REX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ══════════════════ SPLASH ══════════════════ -->
+  <div id="splash">
+    <div class="splash-logo">REX</div>
+    <div class="splash-tagline">Tu cine en casa</div>
+    <div class="splash-spinner"></div>
+  </div>
+
+  <!-- ══════════════════ APP SHELL ══════════════════ -->
+  <div id="app" style="display:none">
+
+    <!-- NAVBAR -->
+    <nav id="navbar">
+      <div class="nav-logo">REX</div>
+      <div class="nav-links">
+        <button class="nav-btn active focusable" data-view="home" id="nav-home">Inicio</button>
+        <button class="nav-btn focusable" data-view="search" id="nav-search">🔍 Buscar</button>
+      </div>
+      <div id="nav-clock" class="nav-clock">00:00</div>
+    </nav>
+
+    <!-- ══ VISTA: HOME ══ -->
+    <div id="view-home" class="view">
+      <div id="home-sections"></div>
+      <div id="home-loader" class="loader-overlay" style="display:none">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+    <!-- ══ VISTA: SEARCH ══ -->
+    <div id="view-search" class="view" style="display:none">
+      <div class="search-header">
+        <div class="search-box-wrap">
+          <span class="search-icon">🔍</span>
+          <input
+            id="search-input"
+            type="text"
+            class="search-input"
+            placeholder="Buscar películas, series, animes…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button id="search-clear" class="search-clear focusable" style="display:none" aria-label="Limpiar búsqueda">✕</button>
+        </div>
+        <!-- Teclado virtual para TV -->
+        <div id="keyboard" class="keyboard"></div>
+      </div>
+      <div id="search-results"></div>
+      <div id="search-loader" class="loader-overlay" style="display:none">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+    <!-- ══ VISTA: DETALLE ══ -->
+    <div id="view-detail" class="view" style="display:none">
+      <img id="detail-backdrop" class="detail-backdrop" src="" alt="" />
+      <div class="detail-gradient-top"></div>
+      <div class="detail-gradient-left"></div>
+      <div class="detail-gradient-bottom"></div>
+
+      <button id="detail-back" class="detail-back focusable" aria-label="Volver">‹ Volver</button>
+
+      <div class="detail-panel">
+        <!-- Badges -->
+        <div class="detail-badges">
+          <span id="detail-badge-type" class="badge badge-red">PELÍCULA</span>
+          <span id="detail-badge-quality" class="badge badge-outline">HD</span>
+        </div>
+
+        <!-- Título -->
+        <h1 id="detail-title" class="detail-title"></h1>
+
+        <!-- Meta -->
+        <div class="detail-meta">
+          <span id="detail-year" class="meta-year"></span>
+          <span class="meta-dot"></span>
+          <span id="detail-rating" class="meta-rating">★ —</span>
+          <span class="meta-dot" id="meta-dot-seasons" style="display:none"></span>
+          <span id="detail-seasons" class="meta-seasons" style="display:none"></span>
+        </div>
+
+        <!-- Sinopsis -->
+        <p id="detail-synopsis" class="detail-synopsis">Cargando…</p>
+
+        <!-- Botones de acción -->
+        <div class="detail-actions">
+          <button id="btn-play" class="btn-play focusable" disabled aria-label="Reproducir">
+            ▶ Reproducir
+          </button>
+          <button id="btn-mylist" class="btn-secondary focusable" aria-label="Agregar a Mi Lista">
+            + Mi Lista
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel episodios (solo para series) -->
+      <div id="panel-episodes" class="panel-episodes" style="display:none">
+        <div class="ep-header">
+          <span class="ep-title">Episodios</span>
+          <button id="season-selector" class="season-selector focusable" aria-label="Seleccionar temporada">
+            Temporada 1
+          </button>
+        </div>
+        <div id="ep-list" class="ep-list"></div>
+      </div>
+
+      <div id="detail-loader" class="loader-overlay" style="display:none">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+    <!-- ══ VISTA: PLAYER ══ -->
+    <div id="view-player" class="view" style="display:none">
+
+      <!-- Controles superiores -->
+      <div id="player-controls" class="player-controls">
+        <button id="player-back" class="player-back focusable" aria-label="Volver">‹</button>
+        <span id="player-title" class="player-title"></span>
+        <div id="player-servers" class="player-servers"></div>
+      </div>
+
+      <!-- Frame de reproducción -->
+      <iframe
+        id="player-frame"
+        class="player-frame"
+        allowfullscreen
+        allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+      ></iframe>
+
+      <!-- Overlay: Siguiente Episodio -->
+      <div id="next-ep-overlay">
+        <div class="next-ep-progress">
+          <div class="next-ep-progress-bar" style="width:100%"></div>
+        </div>
+        <div class="next-ep-header">
+          <div class="next-ep-label">A continuación</div>
+          <div class="next-ep-title">Cargando…</div>
+          <div class="next-ep-meta"></div>
+        </div>
+        <div class="next-ep-actions">
+          <button id="btn-next-ep" class="btn-next-ep focusable">
+            ▶ Reproducir ahora
+            <span class="next-ep-countdown">15</span>
+          </button>
+          <button id="btn-dismiss-next" class="btn-dismiss-next focusable">Ignorar</button>
+        </div>
+      </div>
+
+    </div><!-- /#view-player -->
+
+  </div><!-- /#app -->
+
+  <!-- Toast global -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Scripts — orden importante -->
+  <script src="js/api.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/detail.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
