@@ -368,11 +368,31 @@ const DetailView = (() => {
     document.getElementById('view-detail').style.display = 'none';
   }
 
+  function restore() {
+    const view = document.getElementById('view-detail');
+    if (!view) return;
+
+    view.style.display = '';
+    view.style.opacity = '1';
+    view.style.transition = '';
+    view.classList.remove('entering');
+
+    const backdrop = document.getElementById('detail-backdrop');
+    if (backdrop) {
+      backdrop.style.opacity = '1';
+      if (_item && (backdrop.src !== (_item.backdropUrl || _item.posterUrl || ''))) {
+        backdrop.src = _item.backdropUrl || _item.posterUrl || '';
+      }
+    }
+
+    showLoader(false);
+  }
+
   // Exponer contexto de episodios para el player (siguiente episodio)
   function getEpisodeContext() {
     return { seasons: _seasons, currentSeason: _currentSeason };
   }
 
-  return { show, hide, getEpisodeContext, loadEpisode };
+  return { show, hide, restore, getEpisodeContext, loadEpisode };
 
 })();

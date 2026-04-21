@@ -1,0 +1,50 @@
+<div id="view-detail" class="view" style="display:none">
+  <img id="detail-backdrop" class="detail-backdrop" src="" alt="" />
+  <div class="detail-gradient-top"></div>
+  <div class="detail-gradient-left"></div>
+  <div class="detail-gradient-bottom"></div>
+
+  <button id="detail-back" class="detail-back focusable" aria-label="Volver">&lt; Volver</button>
+
+  <div class="detail-panel">
+    <div class="detail-badges">
+      <span id="detail-badge-type" class="badge badge-red">PELICULA</span>
+      <span id="detail-badge-quality" class="badge badge-outline">HD</span>
+    </div>
+
+    <h1 id="detail-title" class="detail-title"></h1>
+
+    <div class="detail-meta">
+      <span id="detail-year" class="meta-year"></span>
+      <span class="meta-dot"></span>
+      <span id="detail-rating" class="meta-rating">* -</span>
+      <span class="meta-dot" id="meta-dot-seasons" style="display:none"></span>
+      <span id="detail-seasons" class="meta-seasons" style="display:none"></span>
+    </div>
+
+    <p id="detail-synopsis" class="detail-synopsis">Cargando...</p>
+
+    <div class="detail-actions">
+      <button id="btn-play" class="btn-play focusable" disabled aria-label="Reproducir">
+        &#9654; Reproducir
+      </button>
+      <button id="btn-mylist" class="btn-secondary focusable" aria-label="Agregar a Mi Lista">
+        + Mi Lista
+      </button>
+    </div>
+  </div>
+
+  <div id="panel-episodes" class="panel-episodes" style="display:none">
+    <div class="ep-header">
+      <span class="ep-title">Episodios</span>
+      <button id="season-selector" class="season-selector focusable" aria-label="Seleccionar temporada">
+        Temporada 1
+      </button>
+    </div>
+    <div id="ep-list" class="ep-list"></div>
+  </div>
+
+  <div id="detail-loader" class="loader-overlay" style="display:none">
+    <div class="spinner"></div>
+  </div>
+</div>

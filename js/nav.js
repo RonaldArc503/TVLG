@@ -229,7 +229,7 @@ const Nav = (() => {
   }
 
   // Chequeo periódico de foco
-  setInterval(ensureFocus, 2000);
+  setInterval(ensureFocus, 5000);
 
   init();
 
