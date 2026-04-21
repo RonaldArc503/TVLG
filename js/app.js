@@ -94,17 +94,24 @@ const App = (() => {
     });
   }
 
-  function showHome() {
-    const prev = _currentView;
-    _stack.length = 0;
-    _stack.push("home");
-    _currentView = "home";
+  // En showHome(), después de HomeView.show():
+function showHome() {
+  const prev = _currentView;
+  _stack.length = 0;
+  _stack.push("home");
+  _currentView = "home";
 
-    document.getElementById("navbar").style.display = "";
-    setNavActive("home");
-    transition("home", prev && prev !== "home" ? prev : null);
-    HomeView.show();
-  }
+  document.getElementById("navbar").style.display = "";
+  setNavActive("home");
+  transition("home", prev && prev !== "home" ? prev : null);
+  HomeView.show();
+  
+  // Resetear scroll al inicio
+  setTimeout(() => {
+    const homeView = document.getElementById('view-home');
+    if (homeView) homeView.scrollTop = 0;
+  }, 100);
+}
 
   function showSearch() {
     const prev = _currentView || "home";
@@ -266,7 +273,7 @@ const App = (() => {
       clearTimeout(_searchDebounce);
 
       if (q.length >= 2) {
-        _searchDebounce = setTimeout(() => doSearch(q), 450);
+        _searchDebounce = setTimeout(() => doSearch(q), 700);
       } else if (!q) {
         clearSearchResults();
       }
@@ -332,10 +339,8 @@ const App = (() => {
         results.appendChild(wrap);
       });
 
-      setTimeout(() => {
-        const first = results.querySelector(".card");
-        if (first) Nav.focus(first);
-      }, 80);
+      // NO mover foco a resultados: el usuario sigue en el teclado
+      // para poder seguir escribiendo. Navega con flecha abajo cuando quiera.
 
       API.enrichItems(items).then(() => {
         items.forEach((item) => {

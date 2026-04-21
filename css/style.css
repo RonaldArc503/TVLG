@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════
-   REX webOS — Estilos TV (1920×1080) — v2.0
+   REX webOS — Estilos TV (1920×1080) — v2.1
    Fuente base: 16px = 1rem
 ═══════════════════════════════════════════════ */
 
@@ -139,19 +139,47 @@ a { text-decoration: none; color: inherit; }
 
 /* ════════ VIEW TRANSITIONS ════════ */
 .view {
-  position: absolute; inset: 0;
+  position: absolute;
+  inset: 0;
   padding-top: var(--nav-h);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   animation: fadeIn 0.3s ease;
+  scroll-behavior: smooth;
 }
 .view.entering { animation: scaleIn 0.35s cubic-bezier(0.4,0,0.2,1); }
+
+/* Scrollbar personalizado (visible pero bonito) */
+.view::-webkit-scrollbar,
+#home-sections::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.view::-webkit-scrollbar-track,
+#home-sections::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+}
+
+.view::-webkit-scrollbar-thumb,
+#home-sections::-webkit-scrollbar-thumb {
+  background: var(--red);
+  border-radius: 4px;
+}
+
+.view::-webkit-scrollbar-thumb:hover,
+#home-sections::-webkit-scrollbar-thumb:hover {
+  background: var(--red-hover);
+}
 
 /* ════════ HOME ════════ */
 #home-sections {
   padding: 16px 0 60px;
-  overflow-y: auto; overflow-x: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   height: calc(1080px - var(--nav-h));
-  scrollbar-width: none;
+  scrollbar-width: thin;
   scroll-behavior: smooth;
 }
 #home-sections::-webkit-scrollbar { display: none; }

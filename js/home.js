@@ -32,6 +32,32 @@ const HomeView = (() => {
     });
   }
 
+  // home.js - Añadir esta función después de render()
+
+function ensureVisible(element) {
+  if (!element) return;
+  
+  const view = document.getElementById('view-home');
+  const elRect = element.getBoundingClientRect();
+  const viewRect = view.getBoundingClientRect();
+  
+  // Scroll vertical automático cuando el elemento sale de la vista
+  if (elRect.bottom > viewRect.bottom - 100) {
+    view.scrollTop += (elRect.bottom - viewRect.bottom + 120);
+  } else if (elRect.top < viewRect.top + 80) {
+    view.scrollTop -= (viewRect.top + 80 - elRect.top);
+  }
+}
+
+// Modificar la función load() - después de focus(first)
+setTimeout(() => {
+  const first = document.querySelector('#view-home .card');
+  if (first) Nav.focus(first);
+}, 100);
+
+// Exponer ensureVisible para que Nav pueda usarlo
+return { show, hide, load, createCard, ensureVisible };
+
   function createSection(section, index) {
     const wrap = document.createElement('div');
     wrap.className = 'section';
@@ -39,19 +65,30 @@ const HomeView = (() => {
     wrap.style.animationDelay = (index * 60) + 'ms';
     wrap.style.animation = 'slideUp 0.4s ease both';
 
+    const titleRow = document.createElement('div');
+    titleRow.className = 'section-header';
+
     const title = document.createElement('div');
     title.className = 'section-title';
     title.textContent = section.title;
 
+    const countBadge = document.createElement('div');
+    countBadge.className = 'section-count';
+    countBadge.textContent = section.items.length + ' títulos';
+
+    titleRow.appendChild(title);
+    titleRow.appendChild(countBadge);
+
     const row = document.createElement('div');
     row.className = 'section-row';
 
+    // Mostrar TODOS los items — el scroll horizontal los cubre
     section.items.forEach((item, i) => {
       const card = createCard(item, i);
       row.appendChild(card);
     });
 
-    wrap.appendChild(title);
+    wrap.appendChild(titleRow);
     wrap.appendChild(row);
     return wrap;
   }

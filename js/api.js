@@ -103,34 +103,64 @@ const API = (() => {
 
   async function getFeaturedMovies() {
     try {
-      const data = await httpGet(API_BASE + '/sliders?type=movies&posts_per_page=8');
+      const data = await httpGet(API_BASE + '/sliders?type=movies&posts_per_page=30');
       return parseList(data);
     } catch (e) { console.warn('getFeatured failed', e); return []; }
   }
 
   async function getMovies(page = 1) {
-    const data = await httpGet(`${API_BASE}/listing?page=${page}&post_type=movies&posts_per_page=16&genres=&years=`);
+    const data = await httpGet(`${API_BASE}/listing?page=${page}&post_type=movies&posts_per_page=30&genres=&years=`);
     return parseList(data);
   }
 
   async function getTvShows(page = 1) {
-    const data = await httpGet(`${API_BASE}/listing?page=${page}&post_type=tvshows&posts_per_page=16&genres=&years=`);
+    const data = await httpGet(`${API_BASE}/listing?page=${page}&post_type=tvshows&posts_per_page=30&genres=&years=`);
     return parseList(data);
   }
 
   async function getPopularMovies() {
-    const data = await httpGet(`${API_BASE}/tops?range=month&limit=24&post_type=movies`);
+    const data = await httpGet(`${API_BASE}/tops?range=month&limit=30&post_type=movies`);
     return parseList(data);
   }
 
   async function getPopularTvShows() {
-    const data = await httpGet(`${API_BASE}/tops?range=month&limit=24&post_type=tvshows`);
+    const data = await httpGet(`${API_BASE}/tops?range=month&limit=30&post_type=tvshows`);
+    return parseList(data);
+  }
+
+  async function getTopRatedMovies() {
+    const data = await httpGet(`${API_BASE}/tops?range=all&limit=30&post_type=movies`);
+    return parseList(data);
+  }
+
+  async function getTopRatedSeries() {
+    const data = await httpGet(`${API_BASE}/tops?range=all&limit=30&post_type=tvshows`);
+    return parseList(data);
+  }
+
+  async function getTopRatedAnimes() {
+    const data = await httpGet(`${API_BASE}/tops?range=all&limit=30&post_type=animes`);
+    return parseList(data);
+  }
+
+  async function getSeries2026(page = 1) {
+    const data = await httpGet(`${API_BASE}/listing?page=${page}&post_type=tvshows&posts_per_page=30&genres=&years=2026`);
+    return parseList(data);
+  }
+
+  async function getMovies2026(page = 1) {
+    const data = await httpGet(`${API_BASE}/listing?page=${page}&post_type=movies&posts_per_page=30&genres=&years=2026`);
+    return parseList(data);
+  }
+
+  async function getComedyContent(page = 1) {
+    const data = await httpGet(`${API_BASE}/listing?tax=genres&term=comedia&page=${page}&post_type=movies%2Ctvshows%2Canimes&posts_per_page=30`);
     return parseList(data);
   }
 
   async function search(query, page = 1) {
     const q = encodeURIComponent(query);
-    const data = await httpGet(`${API_BASE}/search?query=${q}&page=${page}&post_type=movies%2Ctvshows%2Canimes&posts_per_page=16`);
+    const data = await httpGet(`${API_BASE}/search?query=${q}&page=${page}&post_type=movies%2Ctvshows%2Canimes&posts_per_page=30`);
     return parseList(data);
   }
 
@@ -304,18 +334,31 @@ const API = (() => {
     promises.push(getPopularMovies());   await sleep(stagger);
     promises.push(getMovies(1));         await sleep(stagger);
     promises.push(getTvShows(1));        await sleep(stagger);
-    promises.push(getPopularTvShows());
+    promises.push(getSeries2026());      await sleep(stagger);
+    promises.push(getMovies2026());      await sleep(stagger);
+    promises.push(getComedyContent());   await sleep(stagger);
+    promises.push(getTopRatedMovies());  await sleep(stagger);
+    promises.push(getTopRatedSeries());  await sleep(stagger);
+    promises.push(getTopRatedAnimes());
 
-    const [featured, popular, latest, series, popularSeries] = await Promise.allSettled(promises)
+    const [
+      featured, popular, latest, series,
+      series2026, movies2026, comedy,
+      topMovies, topSeries, topAnimes
+    ] = await Promise.allSettled(promises)
       .then(results => results.map(r => r.status === 'fulfilled' ? r.value : []));
 
     const sections = [];
     const fi = (featured.length ? featured : latest).slice(0, 10);
-    if (fi.length)             sections.push({ title: '🔥 Destacadas',         items: fi });
-    if (popular.length)        sections.push({ title: '📈 Populares del Mes',   items: popular.slice(0, 16) });
-    if (latest.length)         sections.push({ title: '🎬 Últimas Películas',   items: latest.slice(0, 16) });
-    if (series.length)         sections.push({ title: '📺 Series',              items: series.slice(0, 16) });
-    if (popularSeries.length)  sections.push({ title: '⭐ Series Populares',    items: popularSeries.slice(0, 16) });
+    if (fi.length)          sections.push({ title: '🔥 Destacadas',              items: fi });
+    if (movies2026.length)  sections.push({ title: '🆕 Estrenos 2026',            items: movies2026 });
+    if (series2026.length)  sections.push({ title: '📡 Series 2026',              items: series2026 });
+    if (topMovies.length)   sections.push({ title: '⭐ Mejor Rating · Películas', items: topMovies });
+    if (topSeries.length)   sections.push({ title: '⭐ Mejor Rating · Series',    items: topSeries });
+    if (topAnimes.length)   sections.push({ title: '⭐ Mejor Rating · Animes',    items: topAnimes });
+    if (latest.length)      sections.push({ title: '🎬 Últimas Películas',        items: latest });
+    if (comedy.length)      sections.push({ title: '😂 Comedia',                  items: comedy });
+    if (series.length)      sections.push({ title: '📺 Series',                   items: series });
 
     _homeCache   = sections;
     _homeCacheAt = Date.now();
@@ -325,7 +368,8 @@ const API = (() => {
   return {
     loadHomeSections, search, getSeasons, getPlayer,
     getPlayableUrls, hit, enrichItem, enrichItems,
-    normalizeType,
+    normalizeType, getSeries2026, getMovies2026, getComedyContent,
+    getTopRatedMovies, getTopRatedSeries, getTopRatedAnimes,
   };
 
 })();
